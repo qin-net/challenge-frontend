@@ -158,6 +158,8 @@
 <script setup>
 import { computed, onBeforeUnmount, ref } from 'vue';
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://39.106.185.254:5000').replace(/\/$/, '');
+
 const irInput = ref(null);
 const viInput = ref(null);
 const irImage = ref(null);
@@ -280,7 +282,7 @@ async function runFusion(irSrc, viSrc) {
     uploadForm.append('ir_image', irBlob, 'ir_image.png');
     uploadForm.append('vi_image', viBlob, 'vi_image.png');
 
-    const uploadResponse = await fetch('http://localhost:5000/api/upload', {
+    const uploadResponse = await fetch(`${API_BASE_URL}/api/upload`, {
       method: 'POST',
       body: uploadForm
     });
@@ -297,7 +299,7 @@ async function runFusion(irSrc, viSrc) {
     const sessionId = uploadData.session_id;
 
     // 2. 处理融合
-    const processResponse = await fetch('http://localhost:5000/api/process', {
+    const processResponse = await fetch(`${API_BASE_URL}/api/process`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -315,8 +317,8 @@ async function runFusion(irSrc, viSrc) {
     }
 
     // 3. 构建结果图像URL
-    const stage2Url = `http://localhost:5000/api/result/${sessionId}_stage2.png`;
-    const stage3Url = `http://localhost:5000/api/result/${sessionId}_fused.png`;
+    const stage2Url = `${API_BASE_URL}/api/result/${sessionId}_stage2.png`;
+    const stage3Url = `${API_BASE_URL}/api/result/${sessionId}_fused.png`;
 
     // 4. 构建返回数据
     const resultMetrics = {
